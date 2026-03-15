@@ -1,0 +1,3179 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "iCanteen-api接口",
+    "description": "校园“智汇”食堂后端接口文档（返回统一使用 Result 包装）",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "用户"
+    },
+    {
+      "name": "管理员"
+    },
+    {
+      "name": "食堂"
+    },
+    {
+      "name": "窗口"
+    },
+    {
+      "name": "菜品"
+    },
+    {
+      "name": "订单"
+    },
+    {
+      "name": "订单-管理"
+    },
+    {
+      "name": "菜品评价"
+    }
+  ],
+  "paths": {
+    "/user/code": {
+      "post": {
+        "summary": "发送登录验证码",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "用户"
+        ],
+        "parameters": [
+          {
+            "name": "phone",
+            "in": "query",
+            "description": "手机号（11位大陆手机号）",
+            "required": true,
+            "example": "13456789004",
+            "schema": {
+              "type": "string",
+              "pattern": "^1[3-9]\\d{9}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/login": {
+      "post": {
+        "summary": "登录（验证码或密码二选一）",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "用户"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginFormDTO"
+              },
+              "examples": {
+                "短信登录": {
+                  "value": {
+                    "phone": "13456789004",
+                    "code": "545547"
+                  },
+                  "summary": "短信登录"
+                },
+                "密码登录": {
+                  "value": {
+                    "phone": "13800000002",
+                    "password": "123456"
+                  },
+                  "summary": "密码登录"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Result(data=token)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/me": {
+      "get": {
+        "summary": "获取当前登录用户",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "用户"
+        ],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "aa19515bcc324ccb811ac30548d0f520",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result(data=UserDTO)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/info": {
+      "put": {
+        "summary": "修改当前登录用户详情",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "用户"
+        ],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "aa19515bcc324ccb811ac30548d0f520",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserInfoUpdateDTO"
+              },
+              "example": {
+                "birthday": "2003-12-31",
+                "city": "Shenzhen",
+                "gender": false,
+                "phone": "13456789048",
+                "icon": "/imgs/icons/default2.png",
+                "introduce": "hihihi!",
+                "nickname": "user_abc",
+                "password": "321cba"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "summary": "获取当前登录用户详情",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "用户"
+        ],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "aa19515bcc324ccb811ac30548d0f520",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result(data=UserProfileDTO)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/logout": {
+      "post": {
+        "summary": "退出登录",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "用户"
+        ],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "登录令牌，支持 token 或 Bearer token",
+            "required": false,
+            "example": "00be94d772df4bd1b84fc2a4a1b3f918",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/sign": {
+      "post": {
+        "summary": "用户签到",
+        "deprecated": false,
+        "description": "登录用户执行当天签到（Bitmap），首次签到成功奖励1积分。",
+        "tags": [
+          "用户"
+        ],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "用户登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "aa19515bcc324ccb811ac30548d0f520",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result",
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/user/sign/count": {
+      "get": {
+        "summary": "查询当前连续签到天数",
+        "deprecated": false,
+        "description": "返回当前登录用户截至今天的连续签到天数",
+        "tags": [
+          "用户"
+        ],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "用户登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "a59e4a4744b94887a7126fc350cd640d",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result(data=连续签到天数)",
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/user/list": {
+      "get": {
+        "summary": "管理员分页查询用户列表",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "管理员"
+        ],
+        "parameters": [
+          {
+            "name": "current",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": 0,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": 0,
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "phone",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nickname",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": 1,
+            "schema": {
+              "type": "integer",
+              "enum": [
+                0,
+                1
+              ]
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "管理员登录令牌",
+            "required": true,
+            "example": "0406b05b0f534d0ca648b305972d0fa4",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result(data=AdminUserDTO[], total=count)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/user/{id}": {
+      "get": {
+        "summary": "管理员查看用户详情",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "管理员"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": 1070,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "管理员登录令牌",
+            "required": true,
+            "example": "0406b05b0f534d0ca648b305972d0fa4",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result(data=AdminUserDTO)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "put": {
+        "summary": "管理员修改用户详情",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "管理员"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": 1070,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "管理员登录令牌",
+            "required": true,
+            "example": "0406b05b0f534d0ca648b305972d0fa4",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminUserUpdateDTO"
+              },
+              "example": {
+                "birthday": "2001-06-10",
+                "city": "Beijing",
+                "gender": false,
+                "phone": "13456789005",
+                "icon": "/imgs/icons/default3.png",
+                "introduce": "hello!",
+                "nickname": "testuser_03",
+                "password": "12345678",
+                "credits": 1,
+                "role": 0
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/canteen": {
+      "post": {
+        "summary": "新增食堂（管理员）",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "食堂"
+        ],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "管理员登录令牌",
+            "required": true,
+            "example": "0406b05b0f534d0ca648b305972d0fa4",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CanteenCreateDTO"
+              },
+              "example": {
+                "name": "Five Canteen",
+                "images": "",
+                "address": "111",
+                "openHours": "07:00-20:00",
+                "status": 1,
+                "x": 120.134654,
+                "y": 29.123458
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Result(data=id)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "put": {
+        "summary": "修改食堂（管理员）",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "食堂"
+        ],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "管理员登录令牌",
+            "required": true,
+            "example": "0406b05b0f534d0ca648b305972d0fa4",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CanteenUpdateDTO"
+              },
+              "example": {
+                "id": 5,
+                "address": "West Compus",
+                "images": "/imgs/canteen/canteen5.jpg"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/canteen/{id}": {
+      "delete": {
+        "summary": "删除食堂（管理员）",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "食堂"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": 5,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "管理员登录令牌",
+            "required": true,
+            "example": "0406b05b0f534d0ca648b305972d0fa4",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "summary": "免登录查询某食堂详情",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "食堂"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": 2,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result(data=Canteen)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/window/list": {
+      "get": {
+        "summary": "免登录查询某食堂所有窗口",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "窗口"
+        ],
+        "parameters": [
+          {
+            "name": "canteenId",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": 3,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result(data=Window[])",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/window/{id}": {
+      "get": {
+        "summary": "免登录查询某窗口详细信息",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "窗口"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": 3,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result(data=Window)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "delete": {
+        "summary": "删除窗口（管理员）",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "窗口"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": 9,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "管理员登录令牌",
+            "required": true,
+            "example": "0406b05b0f534d0ca648b305972d0fa4",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/window/{id}/dishes": {
+      "get": {
+        "summary": "免登录查询某窗口所有菜品",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "窗口"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": 4,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result(data=Dish[])",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/window/report-wait-time": {
+      "post": {
+        "summary": "上报窗口排队时长",
+        "deprecated": false,
+        "description": "登录用户上报窗口排队时长。要求用户坐标到食堂坐标距离不超过300m；上报成功奖励20积分。",
+        "tags": [
+          "窗口"
+        ],
+        "parameters": [
+          {
+            "name": "windowId",
+            "in": "query",
+            "description": "窗口ID",
+            "required": true,
+            "example": 1,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "waitTime",
+            "in": "query",
+            "description": "排队时长（分钟）",
+            "required": true,
+            "example": 7,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "query",
+            "description": "用户经度",
+            "required": true,
+            "example": 120.149192,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "latitude",
+            "in": "query",
+            "description": "用户纬度",
+            "required": true,
+            "example": 30.316078,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "用户登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "aa19515bcc324ccb811ac30548d0f520",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/window": {
+      "post": {
+        "summary": "增加窗口（管理员）",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "窗口"
+        ],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "管理员登录令牌",
+            "required": true,
+            "example": "0406b05b0f534d0ca648b305972d0fa4",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WindowCreateDTO"
+              },
+              "example": {
+                "canteenId": 3,
+                "name": "麻辣烫",
+                "description": "麻麻辣辣~",
+                "sort": 0,
+                "status": 1,
+                "waitTime": 8
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Result(data=id)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "put": {
+        "summary": "修改窗口（管理员）",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "窗口"
+        ],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "管理员登录令牌",
+            "required": true,
+            "example": "0406b05b0f534d0ca648b305972d0fa4",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WindowUpdateDTO"
+              },
+              "example": {
+                "id": 9,
+                "name": "你好西餐厅",
+                "waitTime": 16
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/dish/random-recommend": {
+      "get": {
+        "summary": "免登录获取今日推荐菜式",
+        "deprecated": false,
+        "description": "随机返回一道今日可售且高评分的推荐菜式",
+        "tags": [
+          "菜品"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Result(data=Dish)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/dish/{id}": {
+      "get": {
+        "summary": "免登录查询菜品详情",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "菜品"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "菜品ID",
+            "required": true,
+            "example": 6,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result(data=Dish)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "delete": {
+        "summary": "删除菜式（管理员）",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "菜品"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "菜品ID",
+            "required": true,
+            "example": 14,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "管理员登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "0406b05b0f534d0ca648b305972d0fa4",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/dish/recommend/by-canteen": {
+      "get": {
+        "summary": "免登录获取某食堂推荐菜式",
+        "deprecated": false,
+        "description": "输入食堂ID，返回四道菜详情：1道该食堂最高分中随机菜式 + 3道管理员手动推荐菜式",
+        "tags": [
+          "菜品"
+        ],
+        "parameters": [
+          {
+            "name": "canteenId",
+            "in": "query",
+            "description": "食堂ID",
+            "required": true,
+            "example": 2,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result(data=Dish[])",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/dish/recommend/manual": {
+      "post": {
+        "summary": "手动推荐三道菜式（管理员）",
+        "deprecated": false,
+        "description": "输入食堂id和属于该食堂的3个菜式id，设置成功后返回提示",
+        "tags": [
+          "菜品"
+        ],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "管理员登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "0406b05b0f534d0ca648b305972d0fa4",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DishManualRecommendDTO"
+              },
+              "example": {
+                "canteenId": 2,
+                "dishIds": [
+                  7,
+                  9,
+                  11
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Result(data=设置成功)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/dish": {
+      "post": {
+        "summary": "增加菜式（管理员）",
+        "deprecated": false,
+        "description": "必须有窗口id，不需要菜式id（自增生成）",
+        "tags": [
+          "菜品"
+        ],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "管理员登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "0406b05b0f534d0ca648b305972d0fa4",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DishCreateDTO"
+              },
+              "example": {
+                "name": "汤粉",
+                "description": "暖呼呼一碗",
+                "windowId": 6,
+                "image": "/imgs/dish/deliciousnoodle.jpg",
+                "isToday": 1,
+                "price": 18.66,
+                "quantity": 99,
+                "status": 1,
+                "tags": "noodle"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Result(data=id)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "put": {
+        "summary": "修改菜式（管理员）",
+        "deprecated": false,
+        "description": "必须有菜式id",
+        "tags": [
+          "菜品"
+        ],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "管理员登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "0406b05b0f534d0ca648b305972d0fa4",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DishUpdateDTO"
+              },
+              "example": {
+                "id": 14,
+                "name": "老干妈拌饭",
+                "description": "妈妈的味道~",
+                "windowId": 7,
+                "image": "/imgs/dish/yeyerice.jpg",
+                "isToday": 0,
+                "price": 12.88,
+                "quantity": 100,
+                "status": 1,
+                "tags": "great"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/canteen/list": {
+      "get": {
+        "summary": "免登录查询所有食堂（按拥挤程度从轻到重）",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "食堂"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Result(data=Canteen[])",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/canteen/crowd": {
+      "get": {
+        "summary": "免登录查询所有食堂拥挤程度",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "食堂"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Result(data=CanteenCrowdDTO[])",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/canteen/{id}/windows": {
+      "get": {
+        "summary": "免登录查询某食堂所有窗口",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "食堂"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": 1,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result(data=Window[])",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/canteen/{id}/dishes": {
+      "get": {
+        "summary": "免登录查询某食堂今日菜品",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "食堂"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": 2,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result(data=Dish[])",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/canteen/report-crowd": {
+      "post": {
+        "summary": "上报食堂拥挤度",
+        "deprecated": false,
+        "description": "登录用户上报拥挤度。要求用户坐标到食堂坐标距离不超过300m；上报成功奖励10积分。",
+        "tags": [
+          "食堂"
+        ],
+        "parameters": [
+          {
+            "name": "canteenId",
+            "in": "query",
+            "description": "食堂ID",
+            "required": true,
+            "example": 1,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "crowdLevel",
+            "in": "query",
+            "description": "拥挤等级：0低、1中、2高",
+            "required": true,
+            "example": 2,
+            "schema": {
+              "type": "integer",
+              "enum": [
+                0,
+                1,
+                2
+              ]
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "query",
+            "description": "用户经度",
+            "required": true,
+            "example": 120.149192,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "latitude",
+            "in": "query",
+            "description": "用户纬度",
+            "required": true,
+            "example": 30.316078,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "用户登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "aa19515bcc324ccb811ac30548d0f520",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/food-order": {
+      "post": {
+        "summary": "用户下单",
+        "deprecated": false,
+        "description": "登录用户创建餐品订单，后端进行并发库存扣减与事务一致性控制。",
+        "tags": [
+          "订单"
+        ],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "用户登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "9653930b1b53492a80214bbca92c77a3",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FoodOrderCreateDTO"
+              },
+              "example": {
+                "items": [
+                  {
+                    "dishId": 7,
+                    "quantity": 1
+                  },
+                  {
+                    "dishId": 8,
+                    "quantity": 2
+                  }
+                ],
+                "remark": "不要葱和香菜，谢谢！",
+                "longitude": 120.151506,
+                "latitude": 30.333422
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Result(data=orderId)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/food-order/my": {
+      "get": {
+        "summary": "用户分页查询我的订单",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "订单"
+        ],
+        "parameters": [
+          {
+            "name": "current",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "0待接单,1制作中,2待取餐,3已完成,4已取消",
+            "required": false,
+            "example": 0,
+            "schema": {
+              "type": "integer",
+              "enum": [
+                0,
+                1,
+                2,
+                3,
+                4
+              ]
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "用户登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "9653930b1b53492a80214bbca92c77a3",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result(data=FoodOrderSimpleDTO[],total=总数)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/food-order/{id}": {
+      "get": {
+        "summary": "用户查询订单详情",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "订单"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": 2595113729524213,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "用户登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "9653930b1b53492a80214bbca92c77a3",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result(data=FoodOrderDetailDTO)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/food-order/{id}/cancel": {
+      "put": {
+        "summary": "用户取消订单",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "订单"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": 2595113729524213,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "cancelReason",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "点错了呜呜呜",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "用户登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "9653930b1b53492a80214bbca92c77a3",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/food-order/list": {
+      "get": {
+        "summary": "管理员分页查询订单",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "订单-管理"
+        ],
+        "parameters": [
+          {
+            "name": "current",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "enum": [
+                0,
+                1,
+                2,
+                3,
+                4
+              ]
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "windowId",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "4",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "管理员登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "0406b05b0f534d0ca648b305972d0fa4",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result(data=FoodOrderSimpleDTO[],total=总数)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/food-order/{id}": {
+      "get": {
+        "summary": "管理员查询订单详情",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "订单-管理"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": 2342921839837993,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "管理员登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "0406b05b0f534d0ca648b305972d0fa4",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result(data=FoodOrderDetailDTO)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/admin/food-order/{id}/status": {
+      "put": {
+        "summary": "管理员更新订单状态",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "订单-管理"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": 2342921839837993,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "管理员登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "0406b05b0f534d0ca648b305972d0fa4",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FoodOrderStatusUpdateDTO"
+              },
+              "example": {
+                "status": 1,
+                "cancelReason": ""
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/dish-review": {
+      "post": {
+        "summary": "已登录且已下过单用户提交菜品评价（打分+评语）",
+        "deprecated": false,
+        "description": "用户提交菜品评价成功后奖励3积分。",
+        "tags": [
+          "菜品评价"
+        ],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "用户登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "9653930b1b53492a80214bbca92c77a3",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DishReviewSubmitDTO"
+              },
+              "example": {
+                "dishId": 1,
+                "rating": 5,
+                "content": "口味不错，分量足"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/dish-review/by-dish": {
+      "get": {
+        "summary": "用户分页查看某道菜品评价",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "菜品评价"
+        ],
+        "parameters": [
+          {
+            "name": "dishId",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": 1,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "current",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "用户登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "9653930b1b53492a80214bbca92c77a3",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result(data=DishReview[],total=总数)",
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/dish-review/my": {
+      "get": {
+        "summary": "用户分页查看自己发表过的菜品评价",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "菜品评价"
+        ],
+        "parameters": [
+          {
+            "name": "current",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "用户登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "9653930b1b53492a80214bbca92c77a3",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result(data=DishReview[],total=总数)",
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/dish-review/{id}": {
+      "delete": {
+        "summary": "用户删除发表过的菜品评价",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "菜品评价"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "评价ID",
+            "required": true,
+            "example": 5,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "用户登录令牌，支持 token 或 Bearer token",
+            "required": true,
+            "example": "9653930b1b53492a80214bbca92c77a3",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result",
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Result": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "errorMsg": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "null"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          }
+        }
+      },
+      "LoginFormDTO": {
+        "type": "object",
+        "description": "登录参数：phone 必填，code 与 password 二选一且只能传一个",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "pattern": "^1[3-9]\\d{9}$",
+            "description": "手机号（必填）"
+          },
+          "code": {
+            "type": "string",
+            "description": "短信验证码（与 password 二选一）"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6,
+            "description": "登录密码（与 code 二选一）"
+          }
+        },
+        "required": [
+          "phone"
+        ]
+      },
+      "DishReview": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "dishId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "rating": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "content": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "string"
+          },
+          "images": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "dishId",
+          "rating"
+        ]
+      },
+      "UserDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "nickName": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          }
+        }
+      },
+      "Canteen": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "images": {
+            "type": "string"
+          },
+          "x": {
+            "type": "number",
+            "format": "double"
+          },
+          "y": {
+            "type": "number",
+            "format": "double"
+          },
+          "crowdLevel": {
+            "type": "integer"
+          },
+          "crowdScore": {
+            "type": "integer"
+          },
+          "openHours": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer"
+          }
+        }
+      },
+      "UserProfileDTO": {
+        "type": "object",
+        "description": "当前登录用户详情",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "phone": {
+            "type": "string",
+            "example": "13800000001"
+          },
+          "password": {
+            "type": "string",
+            "description": "数据库中的密码字段值"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "introduce": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "birthday": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "credits": {
+            "type": "integer"
+          }
+        }
+      },
+      "Window": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "canteenId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "waitTime": {
+            "type": "integer"
+          },
+          "waitTimeLevel": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "sort": {
+            "type": "integer"
+          }
+        }
+      },
+      "UserInfoUpdateDTO": {
+        "type": "object",
+        "description": "修改本人详情，允许修改 phone、password、nickname、icon、city、introduce、gender、birthday",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "pattern": "^1[3-9]\\d{9}$"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6
+          },
+          "nickname": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "icon": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "introduce": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "gender": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "birthday": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          }
+        }
+      },
+      "DishManualRecommendDTO": {
+        "type": "object",
+        "description": "管理员手动推荐菜式入参，必须传食堂id和3个菜品id",
+        "required": [
+          "canteenId",
+          "dishIds"
+        ],
+        "properties": {
+          "canteenId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "dishIds": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "Dish": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "windowId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "菜品库存数量"
+          },
+          "tags": {
+            "type": "string"
+          },
+          "avgRating": {
+            "type": "number",
+            "format": "double"
+          },
+          "ratingCount": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "isToday": {
+            "type": "integer"
+          }
+        }
+      },
+      "AdminUserDTO": {
+        "type": "object",
+        "description": "管理员查看用户详情返回模型",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "role": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "introduce": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "birthday": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "credits": {
+            "type": "integer",
+            "nullable": true
+          }
+        }
+      },
+      "FoodOrderCreateDTO": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/FoodOrderItemCreateDTO"
+            }
+          },
+          "remark": {
+            "type": "string"
+          }
+        }
+      },
+      "DishRatingDTO": {
+        "type": "object",
+        "description": "菜品评分入参",
+        "required": [
+          "dishId",
+          "rating"
+        ],
+        "properties": {
+          "dishId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "rating": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          }
+        }
+      },
+      "DishReviewSubmitDTO": {
+        "type": "object",
+        "description": "菜品评价入参（打分+评语）",
+        "required": [
+          "dishId",
+          "rating",
+          "content"
+        ],
+        "properties": {
+          "dishId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "rating": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "tags": {
+            "type": "string"
+          },
+          "images": {
+            "type": "string"
+          }
+        }
+      },
+      "AdminUserUpdateDTO": {
+        "type": "object",
+        "description": "管理员修改用户详情参数",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "pattern": "^1[3-9]\\d{9}$"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6
+          },
+          "role": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          "nickname": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "icon": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "introduce": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "gender": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "birthday": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "credits": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "FoodOrderItemCreateDTO": {
+        "type": "object",
+        "required": [
+          "dishId",
+          "quantity"
+        ],
+        "properties": {
+          "dishId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "FoodOrderStatusUpdateDTO": {
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "0待接单,1制作中,2待取餐,3已完成,4已取消",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "cancelReason": {
+            "type": "string"
+          }
+        }
+      },
+      "CanteenCrowdDTO": {
+        "type": "object",
+        "properties": {
+          "canteenId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "crowdLevel": {
+            "type": "integer"
+          },
+          "crowdScore": {
+            "type": "integer"
+          }
+        }
+      },
+      "FoodOrderSimpleDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "orderNo": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalCount": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "pickupCode": {
+            "type": "string"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CanteenCreateDTO": {
+        "type": "object",
+        "description": "管理员新增食堂参数（不需要id）",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "images": {
+            "type": "string"
+          },
+          "x": {
+            "type": "number",
+            "format": "double"
+          },
+          "y": {
+            "type": "number",
+            "format": "double"
+          },
+          "openHours": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "address",
+          "x",
+          "y"
+        ]
+      },
+      "FoodOrderItemDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "dishId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "dishName": {
+            "type": "string"
+          },
+          "dishImage": {
+            "type": "string"
+          },
+          "windowId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "quantity": {
+            "type": "integer"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "status": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          }
+        }
+      },
+      "CanteenUpdateDTO": {
+        "type": "object",
+        "description": "管理员修改食堂参数（必须携带id，其余字段按需修改）",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "images": {
+            "type": "string"
+          },
+          "x": {
+            "type": "number",
+            "format": "double"
+          },
+          "y": {
+            "type": "number",
+            "format": "double"
+          },
+          "openHours": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "FoodOrderDetailDTO": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FoodOrderSimpleDTO"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "remark": {
+                "type": "string"
+              },
+              "cancelReason": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/FoodOrderItemDTO"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "WindowOrderItemStatusUpdateDTO": {
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "仅支持 1制作中,2待取餐,3已出餐",
+            "enum": [
+              1,
+              2,
+              3
+            ]
+          }
+        }
+      },
+      "WindowOrderItemViewDTO": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "orderNo": {
+            "type": "string"
+          },
+          "pickupCode": {
+            "type": "string"
+          },
+          "orderStatus": {
+            "type": "integer"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "itemId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "dishId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "dishName": {
+            "type": "string"
+          },
+          "dishImage": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "itemStatus": {
+            "type": "integer"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "WindowCreateDTO": {
+        "type": "object",
+        "description": "管理员新增窗口参数（不需要id）",
+        "properties": {
+          "canteenId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "waitTime": {
+            "type": "integer"
+          },
+          "waitTimeLevel": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          "sort": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "canteenId",
+          "name"
+        ]
+      },
+      "WindowUpdateDTO": {
+        "type": "object",
+        "description": "管理员修改窗口参数（必须携带id，其他字段按需修改）",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "canteenId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "waitTime": {
+            "type": "integer"
+          },
+          "waitTimeLevel": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          "sort": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "DishCreateDTO": {
+        "type": "object",
+        "description": "管理员新增菜品参数（不需要id）",
+        "required": [
+          "windowId",
+          "name",
+          "price"
+        ],
+        "properties": {
+          "windowId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "tags": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          "isToday": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        }
+      },
+      "DishUpdateDTO": {
+        "type": "object",
+        "description": "管理员修改菜品参数（必须携带id，其他字段按需修改）",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "windowId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "tags": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          "isToday": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        }
+      }
+    },
+    "responses": {},
+    "securitySchemes": {}
+  },
+  "servers": [],
+  "security": []
+}
